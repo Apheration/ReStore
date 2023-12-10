@@ -14,6 +14,8 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+//Cross Origin Resource Sharing - in case client and back end are on two different domains. browser will otherwise deny request
+builder.Services.AddCors();
 
 var app = builder.Build(); // build our application into a variable called app
 
@@ -25,6 +27,11 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection(); //redirects http to https
+
+app.UseCors(opt =>
+{
+    opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+});
 
 app.UseAuthorization();
 

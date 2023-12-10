@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
     public class ProductsController : ControllerBase
     {
         private readonly StoreContext _context; //underscore for private readonly field
