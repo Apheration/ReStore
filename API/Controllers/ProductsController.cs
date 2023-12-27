@@ -5,9 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")] 
-    public class ProductsController : ControllerBase
+ // [ApiController] etc in BaseApiController
+    public class ProductsController : BaseApiController
     {
         private readonly StoreContext _context; //underscore for private readonly field
 
@@ -26,7 +25,10 @@ namespace API.Controllers
         [HttpGet("{id}")] // api/products/
         public async Task<ActionResult<Product>> GetProduct(int id) 
         {
-            return await _context.Products.FindAsync(id); // find value with given primary key
+            var product = await _context.Products.FindAsync(id); // find value with given primary key
+            if (product == null) return NotFound();
+
+            return product;
         }
     }
 }

@@ -1,0 +1,153 @@
+MIGRATE TO VITE SCRIPT
+======================
+
+1. Remove react-scripts from package.json and the @testing- libraries.
+
+2. Add a devDependencies section in the package.json and move any of the @types packages inside it. Also move the typescript dependency in there and update it to 5.0.2.   
+
+3. Remove web-vitals package, eslintConfig, browsersList sections as this does not come with the default vite install
+
+4. Add the following to the devDependencies:
+
+"@typescript-eslint/eslint-plugin": "^6.0.0",
+"@typescript-eslint/parser": "^6.0.0",
+"@vitejs/plugin-react-swc": "^3.3.2",
+"eslint": "^8.45.0",
+"eslint-plugin-react-hooks": "^4.6.0",
+"eslint-plugin-react-refresh": "^0.4.3",
+"vite": "^4.4.5"
+
+5. Update the scripts section
+
+"scripts": {
+  "start": "vite",
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+  "preview": "vite preview"
+},
+
+6.  Run:
+
+npm install -f.   
+npm update
+npm install
+
+7.  Update index.tsx and remove web vitals from there
+
+8.  Add a vite.config.ts in the root of the client project and add the following
+
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  build: {
+    outDir: '../API/wwwroot'
+  },
+  server: {
+    port: 3000
+  },
+  plugins: [react()],
+})
+
+9.  Overwrite the existing tsconfig.json with the following:
+
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+
+10.  Add a tsconfig.node.json in the root of the client project with the following code:
+
+{
+    "compilerOptions": {
+      "composite": true,
+      "skipLibCheck": true,
+      "module": "ESNext",
+      "moduleResolution": "bundler",
+      "allowSyntheticDefaultImports": true
+    },
+    "include": ["vite.config.ts"]
+ }
+
+11.  Create a .eslintrc.cjs file in the client root directory with the following code:
+
+module.exports = {
+  root: true,
+  env: { browser: true, es2020: true },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+  ],
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react-refresh'],
+  rules: {
+    '@typescript-eslint/no-explicit-any': ['off'],
+    'react-refresh/only-export-components': [
+      'warn',
+      { allowConstantExport: true },
+    ],
+  },
+}
+
+12.  Add a vite-env.d.ts file in the src/client directory with the following code:
+
+/// <reference types="vite/client" />
+
+13.  Move the index.html from the public folder to the client root directory and update the code to the following:
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReStore</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
+
+
+14.  Section 12 and onwards.   Update the .env.development to the following:
+
+VITE_API_URL=http://localhost:5000/api/
+
+15.  Section 12 and onwards.  Update the .env.production to the following:
+
+VITE_API_URL=/api/
+
+16.  Section 12 and onwards.  Update the src/api/agent.ts file to use the new environment variables:
+
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+
+axios.interceptors.response.use(async response => {
+    if (import.meta.env.DEV) await sleep();
+
+16.  Run the app
