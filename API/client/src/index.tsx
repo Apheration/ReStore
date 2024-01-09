@@ -7,10 +7,13 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './app/Router/routes.tsx';
+import { StoreProvider } from './app/api/context/StoreContext.tsx';
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 
+    <StoreProvider>    
         <RouterProvider router={ router } />
+    </StoreProvider>    
 
 )

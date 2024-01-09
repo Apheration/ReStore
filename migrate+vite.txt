@@ -1,3 +1,23 @@
+updating server/cart logic system
+
+handleupdate cart->agent(axios)->?
+
+TS: {item ? 'Update Quantity' : 'Add to Cart' }
+probably take a tutorial
+
+logic for function:
+{
+ if (desired result) return WORKED
+	return DIDN'T WORK
+}
+instead of
+if (DIDNT WORK) return didn't
+return WORK
+
+
+clicking View item on catalog resets dark mode
+
+
 MIGRATE TO VITE SCRIPT
 ======================
 
