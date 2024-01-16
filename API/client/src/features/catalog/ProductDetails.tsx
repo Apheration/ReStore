@@ -5,13 +5,14 @@ import { Product } from "../../app/models/product";
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import { useStoreContext } from "../../app/api/context/StoreContext";
 import { LoadingButton } from "@mui/lab";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { removeItem, setBasket } from "../Basket/BasketSlice";
 
 export default function ProductDetails() {
-    // eslint-disable-next-line no-debugger
     //    debugger; // for using debugger in chrome, better to use console.log
-    const { basket, setBasket, removeItem } = useStoreContext();
+    const { basket } = useAppSelector(state => state.basket);
+    const dispatch = useAppDispatch();
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
@@ -45,13 +46,13 @@ export default function ProductDetails() {
 
             const updatedQuantity = item ? quantity - item.quantity : quantity;
             agent.Basket.addItem(product.id, updatedQuantity) // cannot use this func unless product is defined
-                .then(basket => setBasket(basket))
+                .then(basket => dispatch(setBasket((basket))))
                 .catch(error => console.log(error))
                 .finally(() => setSubmitting(false))
         } else { // removing quantity
             const updatedQuantity = item.quantity - quantity;
             agent.Basket.removeItem(product.id, updatedQuantity)
-                .then(() => removeItem(product.id, updatedQuantity))
+                .then(() => dispatch(removeItem({productId: product.id, quantity: updatedQuantity}))) // { } to pass only 1 argument
                 .catch(error => console.log(error))
                 .finally(() => setSubmitting(false));
         }

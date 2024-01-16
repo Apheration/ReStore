@@ -1,14 +1,16 @@
 ﻿import { Box, Button, Grid, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Add, Delete, Remove } from "@mui/icons-material";
-import { useStoreContext } from "../../app/api/context/StoreContext";
 import agent from "../../app/api/agent";
 import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import BasketSummary from "./BasketSummary";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { removeItem, setBasket } from "./BasketSlice";
 
 export default function BasketPage() {
-    const { basket, setBasket, removeItem } = useStoreContext();
-    const [status, setStatus] = useState({
+    const { basket } = useAppSelector(state => state.basket);
+    const dispatch = useAppDispatch();
+    const [status, setStatus] = useState({ //setStatus is function that updates status (state)
         loading: false,
         name: ''
     });
@@ -17,7 +19,7 @@ export default function BasketPage() {
     function handleAddItem(productId: number, name: string) {
         setStatus({ loading: true, name: name });
         agent.Basket.addItem(productId)
-            .then(basket => setBasket(basket))
+            .then(basket => dispatch(setBasket(basket)))
             .catch(error => console.log(error))
             .finally(() => setStatus({ loading: false, name: '' }))
 
@@ -26,9 +28,9 @@ export default function BasketPage() {
     function handleRemoveItem(productId: number, quantity = 1, name: string) {
         setStatus({ loading: true, name: name });
         agent.Basket.removeItem(productId, quantity) 
-                .then(() => removeItem(productId, quantity))
-                .catch(error => console.log(error))
-                .finally(() => setStatus({ loading: false, name: '' }))
+            .then(() => dispatch(removeItem(({ productId, quantity })))) // { } makes only 1 arg going to store
+            .catch(error => console.log(error))
+            .finally(() => setStatus({ loading: false, name: '' }))
         
     }
 

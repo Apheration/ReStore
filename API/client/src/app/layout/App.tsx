@@ -5,28 +5,29 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { useStoreContext } from "../api/context/StoreContext";
 import agent from "../api/agent";
 import { getCookie } from "../util/Util";
 import LoadingComponent from "./LoadingComponent";
+import { useAppDispatch } from "../store/configureStore";
+import { setBasket } from "../../features/Basket/BasketSlice";
 
 function App() { // App() is a component
 
-    const { setBasket } = useStoreContext();
+    const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
     //useeffect so we can get the cart/basket based on the cookie
     useEffect(() => {
         const buyerId = getCookie('buyerId');
         if (buyerId) {
             agent.Basket.get() // get basket contents
-                .then(basket => setBasket(basket))
+                .then(basket => dispatch(setBasket(basket)))
                 .catch(error => console.log(error))
                 .finally(() => setLoading(false));
         }
         else {
             setLoading(false);
         }
-    }, [setBasket]) //needs dependency because is useEffect
+    }, [dispatch]) //needs dependency because is useEffect
 
     const [darkMode, setDarkMode] = useState(false);
     const paletteType = darkMode ? 'dark' : 'light';

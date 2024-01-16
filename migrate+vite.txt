@@ -1,7 +1,7 @@
 updating server/cart logic system
 
-handleupdate cart->agent(axios)->?
-
+handleupdate cart->agent(axios)->? DTOS?
+context vs passing down props
 TS: {item ? 'Update Quantity' : 'Add to Cart' }
 probably take a tutorial
 
@@ -171,3 +171,6 @@ axios.interceptors.response.use(async response => {
     if (import.meta.env.DEV) await sleep();
 
 16.  Run the app
+
+
+

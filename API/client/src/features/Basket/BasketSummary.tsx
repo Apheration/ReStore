@@ -1,9 +1,9 @@
 ﻿import { TableContainer, Paper, Table, TableBody, TableRow, TableCell } from "@mui/material";
-import { useStoreContext } from "../../app/api/context/StoreContext";
 import { addDollarSign } from '../../app/util/Util';
+import { useAppSelector } from "../../app/store/configureStore";
 
 export default function BasketSummary() {
-    const { basket } = useStoreContext(); 
+    const { basket } = useAppSelector(state => state.basket);
 
     // ?? return 0 otherwise reduce doesn't know if basket is undefined
     const subtotal = basket?.items.reduce((sum, item) => sum + (item.quantity * (item.price / 100)), 0) ?? 0;

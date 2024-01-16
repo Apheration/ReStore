@@ -14,13 +14,14 @@ export default function Catalog() {
     const [products, setProducts] = useState<Product[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [loading, setLoading] = useState(true);
-
+ //   const { status } = useAppSelector(state => state.basket);
     // callback function: not returning anything so just ()
     useEffect(() => {
         agent.Catalog.list()
             .then(products => setProducts(products))
             .catch(error => console.log(error))
             .finally(() => setLoading(false))
+
     }, []) //add an empty array as dependency so it only runs once
     // dependency tells react how many times to run. empty array = just once
 

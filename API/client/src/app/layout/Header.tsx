@@ -1,7 +1,7 @@
 ﻿import { ShoppingCart } from "@mui/icons-material";
 import { AppBar, Badge, Box, IconButton, List, ListItem, Switch, Toolbar, Typography } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
-import { useStoreContext } from "../api/context/StoreContext";
+import { useAppSelector } from "../store/configureStore";
 
 const midLinks = [
     { title: 'catalog', path: '/catalog' },
@@ -10,7 +10,6 @@ const midLinks = [
 
 ]
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const rightLinks = [
     { title: 'login', path: '/login' },
     { title: 'register', path: '/register' },
@@ -37,7 +36,7 @@ interface Props {
 // 4 = 32 pixels
 //{Link} creates history aware <a>
 export default function Header({ darkMode, handleThemeChange }: Props) {
-    const { basket } = useStoreContext();
+    const { basket } = useAppSelector(state => state.basket);
     //reduce array into single number
     const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0); // initial value 0. will calculate number of items. sum is accumulator
 
