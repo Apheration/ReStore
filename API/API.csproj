@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="_Client\**" />
+    <Content Remove="_Client\**" />
+    <EmbeddedResource Remove="_Client\**" />
+    <None Remove="_Client\**" />
+    <TypeScriptCompile Remove="_Client\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="client\public\images\.DS_Store" />
   </ItemGroup>
 
