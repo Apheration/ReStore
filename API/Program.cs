@@ -1,5 +1,7 @@
 using API.Data;
+using API.Entities;
 using API.Middleware;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args); // creating the backend
@@ -17,6 +19,13 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 });
 //Cross Origin Resource Sharing - in case client and back end are on two different domains. browser will otherwise deny request
 builder.Services.AddCors();
+// Will give us numerous tables related to roles
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<StoreContext>();
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build(); // build our application into a variable called app
 app.UseMiddleware<ExceptionMiddleware>();
@@ -43,12 +52,14 @@ app.MapControllers();
 // for getting dbcontext object and allowing framework to handle cleanup, see bottom of file
 var scope   = app.Services.CreateScope(); // creates separate instances
 var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger  = scope.ServiceProvider.GetRequiredService<ILogger<Program>>(); // Program class being logged
 
 try
 {
-    context.Database.Migrate();
-    DbInitializer.Initialize(context);
+    await context.Database.MigrateAsync();
+    // async Task
+    await DbInitializer.Initialize(context, userManager);
 }
 catch (Exception ex)
 {
