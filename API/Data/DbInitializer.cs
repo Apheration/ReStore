@@ -1,6 +1,8 @@
 ﻿using API.Entities;
 using Microsoft.AspNetCore.Identity;
 
+
+//dotnet ef migrations remove --force
 namespace API.Data
 {
     public static class DbInitializer
@@ -15,7 +17,7 @@ namespace API.Data
                     Email = "bob@test.com"
                 };
 
-                //creates user
+                //creates user, savechangesasync automatically ran by CreateAsync and AddToRoleAsync
                 await userManager.CreateAsync(user, "Pa$$w0rd");
                 await userManager.AddToRoleAsync(user, "Member");
 
@@ -25,9 +27,9 @@ namespace API.Data
                     Email = "admin@test.com"
                 };
 
-                await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.CreateAsync(admin, "Pa$$w0rd");
                 // AddToRolesAsync - add user to multiple roles
-                await userManager.AddToRolesAsync(admin, new[] { "Member", "Admin" });
+                await userManager.AddToRolesAsync(admin, new[] { "Admin", "Member" });
             }
 
             if (context.Products.Any()) return; // if already seeded break here.

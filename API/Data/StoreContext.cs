@@ -13,9 +13,9 @@ namespace API.Data
         }
 
         public DbSet<Product> Products {  get; set; } // will represent table in database 
-
         public DbSet<Basket> Baskets { get; set; }
 
+        //alternate method to seed database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

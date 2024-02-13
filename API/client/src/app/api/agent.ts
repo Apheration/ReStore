@@ -1,7 +1,8 @@
 ﻿import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../Router/routes";
-import { PaginatedResponse } from "../models/Pagination";
+import { PaginatedResponse } from "../models/pagination";
+import { store } from "../store/configureStore";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 200));
 
@@ -9,6 +10,13 @@ axios.defaults.baseURL = 'http://localhost:5000/api/';
 axios.defaults.withCredentials = true; // for cookie
 
 const responseBody = (response: AxiosResponse) => response.data;
+
+axios.interceptors.request.use(config => {
+    //attach token as authorization header to our request, will persist login when refreshing
+    const token = store.getState().account.user?.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`; // backticks to include JS
+    return config;
+})
 
 axios.interceptors.response.use(async response => {
     await sleep();
@@ -82,11 +90,18 @@ const Basket = {
 
 }
 
+const Account = {
+    login: (values: any) => requests.post('account/login', values),
+    register: (values: any) => requests.post('account/register', values),
+    currentUser: () => requests.get('account/currentUser'),
+
+}
 
 const agent = {
     Catalog,
     TestErrors,
-    Basket
+    Basket,
+    Account
 }
 
 export default agent;

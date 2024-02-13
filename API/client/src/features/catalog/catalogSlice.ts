@@ -2,7 +2,7 @@
 import { Product, ProductParams } from "../../app/models/product";
 import agent from "../../app/api/agent";
 import { RootState } from "../../app/store/configureStore";
-import { MetaData } from "../../app/models/Pagination";
+import { MetaData } from "../../app/models/pagination";
 
 
 interface CatalogState {
