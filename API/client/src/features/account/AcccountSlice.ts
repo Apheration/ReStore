@@ -4,6 +4,7 @@ import agent from "../../app/api/agent";
 import { FieldValues } from "react-hook-form";
 import { router } from "../../app/Router/routes";
 import { toast } from "react-toastify";
+import { setBasket } from "../Basket/BasketSlice";
 
 interface AccountState {
     user: User | null; // can be null
@@ -18,7 +19,10 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
     'account/signInUser',
     async (data, thunkAPI) => {
         try {
-            const user = await agent.Account.login(data);
+            const userDto = await agent.Account.login(data);
+            // basket will be destructed into its own prop, rest of props into user (email and token)
+            const { basket, ...user } = userDto; 
+            if (basket) thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
             return user;
         } catch (error) {
@@ -33,7 +37,10 @@ export const fetchCurrentUser = createAsyncThunk<User>(
         // set token in redux state->agent.ts interceptor
         thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem('user')!)));
         try {
-            const user = await agent.Account.currentUser();
+            const userDto = await agent.Account.currentUser();
+            // basket will be destructed into its own prop, rest of props into user (email and token)
+            const { basket, ...user } = userDto;
+            if (basket) thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
             return user;
         } catch (error) {
@@ -76,7 +83,8 @@ export const accountSlice = createSlice({
         });
         // _state tells linter state isn't required
         builder.addMatcher(isAnyOf(signInUser.rejected), (_state, action) => {
-        console.log(action.payload);
+        // will throw exception from compiler in browser
+        throw action.payload;
         });
     })
 })
