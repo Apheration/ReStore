@@ -102,7 +102,6 @@ namespace API.Controllers
                 };
                 // user already being tracked by context - var user = await _context.Users
                 user.Address = address;
-            //   _context.Update(user);
             }
             // true if 1 or more changes are saved (we wrote something to the database)
             var result = await _context.SaveChangesAsync() > 0;

@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@emotion/react";
+import { ThemeProvider } from "@mui/material";
 import Header from "./Header";
 import { Container, CssBaseline, createTheme } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
@@ -28,20 +28,22 @@ function App() { // App() is a component
     useEffect(() => {
  
         initApp().then(() => setLoading(false));
+ 
     }, [initApp]) 
 
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(true);
     const paletteType = darkMode ? 'dark' : 'light';
     const theme = createTheme({
         palette: {
             mode: paletteType,
             background: {
-                default: paletteType === 'light' ? '#eaeaea' : '#121212'
+                default: (paletteType === 'light') ? '#eaeaea' : '#121212'
             }
         }
     })
 
     function HandleThemeChange() {
+
         setDarkMode(!darkMode);
     }
 

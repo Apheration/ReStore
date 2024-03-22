@@ -29,7 +29,7 @@ const navStyles = {
     }
 }
 
-
+// from parent component App
 interface Props {
     darkMode: boolean;
     handleThemeChange: () => void;

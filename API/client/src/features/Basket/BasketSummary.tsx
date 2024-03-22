@@ -2,11 +2,17 @@
 import { addDollarSign } from '../../app/util/Util';
 import { useAppSelector } from "../../app/store/configureStore";
 
-export default function BasketSummary() {
+interface Props {
+    subtotal?: number;
+}
+
+export default function BasketSummary({ subtotal }: Props) {
     const { basket } = useAppSelector(state => state.basket);
 
     // ?? return 0 otherwise reduce doesn't know if basket is undefined
-    const subtotal = basket?.items.reduce((sum, item) => sum + (item.quantity * (item.price / 100)), 0) ?? 0;
+        subtotal = basket?.items.reduce((sum, item) => sum + (item.quantity * (item.price / 100)), 0) ?? 0;
+    if (subtotal === undefined)
+        subtotal = basket?.items.reduce((sum, item) => sum + (item.quantity * item.price), 0) ?? 0;
     const deliveryFee = subtotal > 100 ? 0 : 5;
 
    
